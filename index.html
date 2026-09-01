@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulado de Oftalmologia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Simulado de Oftalmologia</h1>
+      <span id="contador-questoes">Questão 1 de X</span>
+    </header>
+
+    <main>
+      <!-- Área das Imagens -->
+      <div id="galeria-fotos" class="galeria">
+        <!-- As imagens aparecerão aqui via JavaScript -->
+      </div>
+
+      <!-- Área de Resposta -->
+      <div class="area-resposta">
+        <label for="achados">Quais são os achados?</label>
+        <textarea id="achados" rows="4" placeholder="Descreva os achados da imagem..."></textarea>
+
+        <label for="diagnostico">Qual o diagnóstico?</label>
+        <input type="text" id="diagnostico" placeholder="Ex: Retinopatia Diabética">
+
+        <button id="btn-avaliar" class="btn-principal">Avaliar com IA</button>
+      </div>
+
+      <!-- Área de Feedback da IA (Oculta por padrão) -->
+      <div id="area-feedback" class="feedback oculto">
+        <h3>Resultado</h3>
+        <p><strong>Nota:</strong> <span id="nota-ia"></span>/10</p>
+        <p><strong>Feedback:</strong> <span id="texto-feedback"></span></p>
+      </div>
+    </main>
+
+    <!-- Controles de Navegação -->
+    <footer>
+      <button id="btn-voltar" class="btn-secundario">Anterior</button>
+      <button id="btn-pular" class="btn-secundario">Pular</button>
+      <button id="btn-proxima" class="btn-secundario">Próxima</button>
+    </footer>
+  </div>
+
+  <!-- Script principal que conecta a lógica com a interface -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
