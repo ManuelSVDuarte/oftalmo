@@ -55,7 +55,21 @@ export class GerenciadorSimulado {
 
     // COLOQUE SUA CHAVE REAL AQUI (A que começa com AIza...)
     const API_KEY = "AQ.Ab8RN6I1ezujmj-Z2v0YYx5hV2SYbkponG_2x4Dl3Z3IFDTxAA"; 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+    curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AQ.Ab8RN6I1ezujmj-Z2v0YYx5hV2SYbkponG_2x4Dl3Z3IFDTxAA' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }';
 
     const promptParaIA = `
       Você é um professor de oftalmologia. Avalie a resposta do aluno comparando-a com o gabarito.
