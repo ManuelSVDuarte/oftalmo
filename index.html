@@ -14,6 +14,13 @@
       <span id="contador-questoes">Questão 1 de X</span>
     </header>
 
+    <!-- Caixa de Configuração da Chave (Protege contra vazamento no GitHub) -->
+    <div class="config-api">
+      <label for="input-chave">Chave da API Gemini:</label>
+      <input type="password" id="input-chave" placeholder="Cole sua chave aqui (ex: AIza... ou AQ...)">
+      <small>A chave fica salva apenas no seu navegador para esta sessão.</small>
+    </div>
+
     <main>
       <!-- Área das Imagens -->
       <div id="galeria-fotos" class="galeria">
@@ -47,7 +54,6 @@
     </footer>
   </div>
 
-  <!-- Script principal que conecta a lógica com a interface -->
   <script type="module" src="app.js"></script>
 </body>
 </html>
