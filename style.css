@@ -27,7 +27,26 @@ header {
   align-items: center;
   border-bottom: 2px solid #eaeaea;
   padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.config-api {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
   margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.config-api input {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.config-api small {
+  color: #6c757d;
+  font-size: 12px;
+  display: block;
 }
 
 .galeria {
@@ -52,7 +71,7 @@ header {
 
 label {
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 textarea, input {
@@ -111,7 +130,6 @@ button {
   color: #2e7d32;
 }
 
-/* Esta classe é importante para esconder a nota antes do aluno enviar a resposta */
 .oculto {
   display: none;
 }
