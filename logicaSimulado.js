@@ -43,21 +43,18 @@ export class GerenciadorSimulado {
     return this.respostasUsuario[idQuestaoAtual] || null;
   }
 
-  async avaliarComIA(achadosUsuario, diagnosticoUsuario) {
+  // Recebe a chave digitada como parâmetro
+  async avaliarComIA(achadosUsuario, diagnosticoUsuario, apiKey) {
     const questao = this.obterQuestaoAtual();
     
     this.respostasUsuario[questao.id] = {
       achados: achadosUsuario,
       diagnostico: diagnosticoUsuario,
       nota: null,
-      feedback: "Avaliando..."
+      feedback: "Avaliando com IA..."
     };
 
-    // Sua chave correta
-    const API_KEY = "AIzaSyBsgA-s1UH--KzN74pRJi5kZ83AvC9tkxw"; 
-    
-    // URL exata do seu Início Rápido
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const promptParaIA = `
       Você é um professor de oftalmologia. Avalie a resposta do aluno comparando-a com o gabarito.
@@ -83,16 +80,13 @@ export class GerenciadorSimulado {
 
       const respostaAPI = await fetch(url, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-goog-api-key': API_KEY 
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
       if (!respostaAPI.ok) {
         const erroDetalhado = await respostaAPI.text();
-        console.error("Erro detalhado retornado pelo Google:", erroDetalhado);
+        console.error("Erro retornado pelo Google:", erroDetalhado);
         throw new Error("Falha na API: " + respostaAPI.status);
       }
 
@@ -108,7 +102,7 @@ export class GerenciadorSimulado {
     } catch (erro) {
       console.error("Erro ao consultar o Gemini:", erro);
       this.respostasUsuario[questao.id].nota = 0;
-      this.respostasUsuario[questao.id].feedback = "Erro de conexão com a IA. Pressione F12 e veja a aba 'Console' para descobrir o motivo exato.";
+      this.respostasUsuario[questao.id].feedback = "Erro de conexão. Verifique se a Chave da API inserida no topo da página está correta e válida.";
       return this.respostasUsuario[questao.id];
     }
   }
