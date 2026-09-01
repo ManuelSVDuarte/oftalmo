@@ -54,7 +54,7 @@ export class GerenciadorSimulado {
       feedback: "Avaliando com IA..."
     };
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
 
     const promptParaIA = `
       Você é um professor de oftalmologia. Avalie a resposta do aluno comparando-a com o gabarito.
