@@ -85,12 +85,11 @@ export class GerenciadorSimulado {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'x-goog-api-key': API_KEY // A chave agora vai no cabeçalho, igual ao seu cURL
+          'x-goog-api-key': API_KEY 
         },
         body: JSON.stringify(payload)
       });
 
-      // Adicionei isso para conseguirmos ver o erro real caso falhe
       if (!respostaAPI.ok) {
         const erroDetalhado = await respostaAPI.text();
         console.error("Erro detalhado retornado pelo Google:", erroDetalhado);
@@ -109,15 +108,7 @@ export class GerenciadorSimulado {
     } catch (erro) {
       console.error("Erro ao consultar o Gemini:", erro);
       this.respostasUsuario[questao.id].nota = 0;
-      this.respostasUsuario[questao.id].feedback = "Erro de conexão com a IA. Pressione F12 e veja a aba 'Console' para descobrir o motivo exato do bloqueio.";
-      return this.respostasUsuario[questao.id];
-    }
-  }
-
-    } catch (erro) {
-      console.error("Erro ao consultar o Gemini:", erro);
-      this.respostasUsuario[questao.id].nota = 0;
-      this.respostasUsuario[questao.id].feedback = "Erro de conexão com a IA ou limite de acessos da turma atingido. Aguarde 10 segundos e tente reavaliar.";
+      this.respostasUsuario[questao.id].feedback = "Erro de conexão com a IA. Pressione F12 e veja a aba 'Console' para descobrir o motivo exato.";
       return this.respostasUsuario[questao.id];
     }
   }
