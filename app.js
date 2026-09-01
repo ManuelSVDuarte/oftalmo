@@ -59,8 +59,18 @@ function exibirFeedback(nota, feedback) {
 }
 
 elementos.btnAvaliar.addEventListener('click', async () => {
+  // Pega o valor direto do elemento na tela com segurança
+  const inputChaveEl = document.getElementById('input-chave');
+  const apiKey = inputChaveEl ? inputChaveEl.value.trim() : "";
+  
   const achados = elementos.inputAchados.value;
   const diagnostico = elementos.inputDiagnostico.value;
+
+  if (!apiKey) {
+    alert("Por favor, insira a sua Chave da API do Gemini no campo superior antes de avaliar.");
+    if (inputChaveEl) inputChaveEl.focus();
+    return;
+  }
 
   if (!achados && !diagnostico) {
     alert("Por favor, preencha os achados ou o diagnóstico antes de avaliar.");
@@ -70,7 +80,7 @@ elementos.btnAvaliar.addEventListener('click', async () => {
   elementos.btnAvaliar.disabled = true;
   elementos.btnAvaliar.innerText = "A IA está corrigindo...";
   
-  const resultado = await gerenciador.avaliarComIA(achados, diagnostico);
+  const resultado = await gerenciador.avaliarComIA(achados, diagnostico, apiKey);
   
   exibirFeedback(resultado.nota, resultado.feedback);
   elementos.btnAvaliar.disabled = false;
