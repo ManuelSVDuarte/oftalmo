@@ -53,23 +53,11 @@ export class GerenciadorSimulado {
       feedback: "Avaliando..."
     };
 
-    // COLOQUE SUA CHAVE REAL AQUI (A que começa com AIza...)
+    // Sua chave correta
     const API_KEY = "AQ.Ab8RN6I1ezujmj-Z2v0YYx5hV2SYbkponG_2x4Dl3Z3IFDTxAA"; 
-    curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
-  -H 'Content-Type: application/json' \
-  -H 'X-goog-api-key: AQ.Ab8RN6I1ezujmj-Z2v0YYx5hV2SYbkponG_2x4Dl3Z3IFDTxAA' \
-  -X POST \
-  -d '{
-    "contents": [
-      {
-        "parts": [
-          {
-            "text": "Explain how AI works in a few words"
-          }
-        ]
-      }
-    ]
-  }';
+    
+    // URL exata do seu Início Rápido
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
 
     const promptParaIA = `
       Você é um professor de oftalmologia. Avalie a resposta do aluno comparando-a com o gabarito.
@@ -95,12 +83,18 @@ export class GerenciadorSimulado {
 
       const respostaAPI = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-goog-api-key': API_KEY // A chave agora vai no cabeçalho, igual ao seu cURL
+        },
         body: JSON.stringify(payload)
       });
 
+      // Adicionei isso para conseguirmos ver o erro real caso falhe
       if (!respostaAPI.ok) {
-        throw new Error("Erro na API (Pode ser excesso de acessos simultâneos)");
+        const erroDetalhado = await respostaAPI.text();
+        console.error("Erro detalhado retornado pelo Google:", erroDetalhado);
+        throw new Error("Falha na API: " + respostaAPI.status);
       }
 
       const dadosBrutos = await respostaAPI.json();
@@ -111,6 +105,14 @@ export class GerenciadorSimulado {
       this.respostasUsuario[questao.id].feedback = resultadoJSON.feedback;
 
       return this.respostasUsuario[questao.id];
+
+    } catch (erro) {
+      console.error("Erro ao consultar o Gemini:", erro);
+      this.respostasUsuario[questao.id].nota = 0;
+      this.respostasUsuario[questao.id].feedback = "Erro de conexão com a IA. Pressione F12 e veja a aba 'Console' para descobrir o motivo exato do bloqueio.";
+      return this.respostasUsuario[questao.id];
+    }
+  }
 
     } catch (erro) {
       console.error("Erro ao consultar o Gemini:", erro);
