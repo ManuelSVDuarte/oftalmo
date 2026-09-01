@@ -54,7 +54,7 @@ export class GerenciadorSimulado {
     };
 
     // Sua chave correta
-    const API_KEY = "AQ.Ab8RN6I1ezujmj-Z2v0YYx5hV2SYbkponG_2x4Dl3Z3IFDTxAA"; 
+    const API_KEY = "AIzaSyBsgA-s1UH--KzN74pRJi5kZ83AvC9tkxw"; 
     
     // URL exata do seu Início Rápido
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent`;
