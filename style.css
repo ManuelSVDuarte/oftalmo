@@ -1,0 +1,125 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f4f7f6;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  background: #fff;
+  max-width: 800px;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 20px 30px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.galeria {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.galeria img {
+  max-height: 300px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #000;
+}
+
+.area-resposta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+textarea, input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn-principal {
+  background-color: #007bff;
+  color: white;
+  margin-top: 15px;
+}
+
+.btn-principal:hover {
+  background-color: #0056b3;
+}
+
+.btn-secundario {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secundario:hover {
+  background-color: #ccc;
+}
+
+.btn-secundario:disabled {
+  background-color: #f4f4f4;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.feedback {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #e8f5e9;
+  border-left: 5px solid #4caf50;
+}
+
+.feedback h3 {
+  margin-top: 0;
+  color: #2e7d32;
+}
+
+/* Esta classe é importante para esconder a nota antes do aluno enviar a resposta */
+.oculto {
+  display: none;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  border-top: 2px solid #eaeaea;
+  padding-top: 20px;
+}
