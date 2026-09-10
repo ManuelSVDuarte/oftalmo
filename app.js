@@ -25,15 +25,27 @@ function renderizarTela() {
   elementos.contador.innerText = `Questão ${atual} de ${total}`;
 
   // Garante que a galeria limpa as fotos anteriores e desenha a nova
+// Garante que a galeria limpa as fotos anteriores e desenha a nova com segurança
   elementos.galeria.innerHTML = "";
   if (questao.fotos && questao.fotos.length > 0) {
     questao.fotos.forEach(fotoSrc => {
       const img = document.createElement("img");
       img.src = fotoSrc;
       img.alt = `Imagem da questão ${questao.id}`;
+      
+      // Se a imagem falhar ao carregar, exibe um aviso claro para você ajustar o nome
+      img.onerror = () => {
+        img.style.display = "none";
+        const aviso = document.createElement("div");
+        aviso.style.color = "#ff6b6b";
+        aviso.style.padding = "20px";
+        aviso.style.textAlign = "center";
+        aviso.innerText = `⚠️ Imagem não encontrada: "${fotoSrc}". Verifique o nome do arquivo na pasta img.`;
+        elementos.galeria.appendChild(aviso);
+      };
+
       elementos.galeria.appendChild(img);
     });
-  }
 
   // Limpa os campos de texto
   elementos.inputAchados.value = "";
