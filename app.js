@@ -21,11 +21,10 @@ function renderizarTela() {
   const total = gerenciador.questoes.length;
   const atual = gerenciador.indiceAtual + 1;
 
-  // Atualiza o contador de questões
+  // Atualiza o contador de questões no topo
   elementos.contador.innerText = `Questão ${atual} de ${total}`;
 
-  // Garante que a galeria limpa as fotos anteriores e desenha a nova
-// Garante que a galeria limpa as fotos anteriores e desenha a nova com segurança
+  // Limpa a galeria de fotos e desenha as imagens da questão atual
   elementos.galeria.innerHTML = "";
   if (questao.fotos && questao.fotos.length > 0) {
     questao.fotos.forEach(fotoSrc => {
@@ -33,7 +32,7 @@ function renderizarTela() {
       img.src = fotoSrc;
       img.alt = `Imagem da questão ${questao.id}`;
       
-      // Se a imagem falhar ao carregar, exibe um aviso claro para você ajustar o nome
+      // Se a imagem falhar ao carregar, exibe um aviso claro na tela
       img.onerror = () => {
         img.style.display = "none";
         const aviso = document.createElement("div");
@@ -46,8 +45,9 @@ function renderizarTela() {
 
       elementos.galeria.appendChild(img);
     });
+  }
 
-  // Limpa os campos de texto
+  // Reseta os campos de entrada e oculta o feedback
   elementos.inputAchados.value = "";
   elementos.inputDiagnostico.value = "";
   elementos.areaFeedback.classList.add('oculto');
@@ -65,23 +65,23 @@ function renderizarTela() {
     }
   }
 
-  // Controla a desativação dos botões de navegação nos extremos
+  // Controla a desativação dos botões de navegação (primeira e última questão)
   elementos.btnVoltar.disabled = (gerenciador.indiceAtual === 0);
   elementos.btnProxima.disabled = (gerenciador.indiceAtual === total - 1);
 }
 
 function exibirFeedback(nota, feedback) {
   elementos.notaIa.innerText = nota;
-  // Substitui quebras de linha por <br> para o texto do gabarito ficar legível
+  // Converte as quebras de linha (\n) do texto para a tag <br> do HTML
   elementos.textoFeedback.innerHTML = feedback.replace(/\n/g, '<br>');
   elementos.areaFeedback.classList.remove('oculto');
   elementos.btnAvaliar.innerText = "Reavaliar"; 
 }
 
-// Evento de clique para avaliar a resposta com base nas palavras-chave
+// Evento do botão de avaliar (agora de forma local e síncrona)
 elementos.btnAvaliar.addEventListener('click', () => {
-  const achados = elementos.inputAchados.value;
-  const diagnostico = elementos.inputDiagnostico.value;
+  const achados = elementos.inputAchados.value.trim();
+  const diagnostico = elementos.inputDiagnostico.value.trim();
 
   if (!achados && !diagnostico) {
     alert("Por favor, preencha os achados ou o diagnóstico antes de avaliar.");
@@ -91,12 +91,15 @@ elementos.btnAvaliar.addEventListener('click', () => {
   elementos.btnAvaliar.disabled = true;
   elementos.btnAvaliar.innerText = "Verificando...";
 
+  // Realiza a avaliação instantânea baseada nas palavras-chave do bancoDeDados.js
   const resultado = gerenciador.avaliarResposta(achados, diagnostico);
   
+  // Exibe o resultado na tela
   exibirFeedback(resultado.nota, resultado.feedback);
   elementos.btnAvaliar.disabled = false;
 });
 
+// Eventos de Navegação
 elementos.btnProxima.addEventListener('click', () => {
   if (gerenciador.avancarQuestao()) renderizarTela();
 });
