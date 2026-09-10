@@ -58,7 +58,7 @@ function exibirFeedback(nota, feedback) {
   elementos.btnAvaliar.innerText = "Reavaliar"; 
 }
 
-elementos.btnAvaliar.addEventListener('click', async () => {
+elementos.btnAvaliar.addEventListener('click', () => {
   const achados = elementos.inputAchados.value;
   const diagnostico = elementos.inputDiagnostico.value;
 
@@ -69,10 +69,8 @@ elementos.btnAvaliar.addEventListener('click', async () => {
 
   elementos.btnAvaliar.disabled = true;
   elementos.btnAvaliar.innerText = "Verificando...";
-  
-  // Pequeno efeito visual de 0.5s para dar sensação de processamento
-  await new Promise(resolve => setTimeout(resolve, 500));
 
+  // Removemos o await daqui, pois a função agora é direta
   const resultado = gerenciador.avaliarResposta(achados, diagnostico);
   
   exibirFeedback(resultado.nota, resultado.feedback);
