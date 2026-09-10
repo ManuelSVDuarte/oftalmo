@@ -43,14 +43,13 @@ export class GerenciadorSimulado {
     return this.respostasUsuario[idQuestaoAtual] || null;
   }
 
-  // Verificação por palavras-chave (Sem IA / Offline)
-  // Sem o async
   avaliarResposta(achadosUsuario, diagnosticoUsuario) {
     const questao = this.obterQuestaoAtual();
     
     const respAchados = (achadosUsuario || "").toLowerCase();
     const respDiag = (diagnosticoUsuario || "").toLowerCase();
 
+    // 1. Validação de Diagnóstico (Vale até 5 pontos)
     let acertosDiag = 0;
     const totalDiag = questao.palavrasChaveDiagnostico.length;
     
@@ -59,39 +58,6 @@ export class GerenciadorSimulado {
         acertosDiag++;
       }
     });
-    const notaDiag = totalDiag > 0 ? (acertosDiag / totalDiag) * 5 : 5;
-
-    let acertosAchados = 0;
-    const totalAchados = questao.palavrasChaveAchados.length;
-    
-    questao.palavrasChaveAchados.forEach(termo => {
-      if (respAchados.includes(termo.toLowerCase())) {
-        acertosAchados++;
-      }
-    });
-    const notaAchados = totalAchados > 0 ? (acertosAchados / totalAchados) * 5 : 5;
-
-    let notaFinal = Math.round(notaDiag + notaAchados);
-    if (notaFinal > 10) notaFinal = 10;
-
-    let feedbackMsg = "";
-    if (notaFinal >= 9) {
-      feedbackMsg = "Excelente! Sua resposta cobriu os principais achados e o diagnóstico correto.";
-    } else if (notaFinal >= 6) {
-      feedbackMsg = `Bom trabalho! Você acertou partes importantes, mas faltaram alguns termos-chave.\n\nGabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
-    } else {
-      feedbackMsg = `Sua resposta ficou distante do esperado.\n\nGabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
-    }
-
-    this.respostasUsuario[questao.id] = {
-      achados: achadosUsuario,
-      diagnostico: diagnosticoUsuario,
-      nota: notaFinal,
-      feedback: feedbackMsg
-    };
-
-    return this.respostasUsuario[questao.id];
-  }
     const notaDiag = totalDiag > 0 ? (acertosDiag / totalDiag) * 5 : 5;
 
     // 2. Validação de Achados (Vale até 5 pontos)
@@ -105,21 +71,20 @@ export class GerenciadorSimulado {
     });
     const notaAchados = totalAchados > 0 ? (acertosAchados / totalAchados) * 5 : 5;
 
-    // Nota final de 0 a 10 (arredondada)
+    // Nota final de 0 a 10
     let notaFinal = Math.round(notaDiag + notaAchados);
     if (notaFinal > 10) notaFinal = 10;
 
-    // 3. Monta um feedback educativo inteligente
+    // Monta o feedback
     let feedbackMsg = "";
     if (notaFinal >= 9) {
       feedbackMsg = "Excelente! Sua resposta cobriu os principais achados e o diagnóstico correto.";
     } else if (notaFinal >= 6) {
-      feedbackMsg = `Bom trabalho! Você acertou partes importantes, mas faltaram alguns termos-chave.\n\n📖 Gabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
+      feedbackMsg = `Bom trabalho! Você acertou partes importantes, mas faltaram alguns termos-chave.\n\nGabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
     } else {
-      feedbackMsg = `Sua resposta ficou distante do esperado para este caso.\n\n📖 Gabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
+      feedbackMsg = `Sua resposta ficou distante do esperado.\n\nGabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
     }
 
-    // Salva o resultado
     this.respostasUsuario[questao.id] = {
       achados: achadosUsuario,
       diagnostico: diagnosticoUsuario,
