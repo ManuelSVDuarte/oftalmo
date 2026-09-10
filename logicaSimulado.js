@@ -43,67 +43,57 @@ export class GerenciadorSimulado {
     return this.respostasUsuario[idQuestaoAtual] || null;
   }
 
-  // Recebe a chave digitada como parâmetro
-  async avaliarComIA(achadosUsuario, diagnosticoUsuario, apiKey) {
+  // Verificação por palavras-chave (Sem IA / Offline)
+  async avaliarResposta(achadosUsuario, diagnosticoUsuario) {
     const questao = this.obterQuestaoAtual();
     
+    const respAchados = (achadosUsuario || "").toLowerCase();
+    const respDiag = (diagnosticoUsuario || "").toLowerCase();
+
+    // 1. Validação de Diagnóstico (Vale até 5 pontos)
+    let acertosDiag = 0;
+    const totalDiag = questao.palavrasChaveDiagnostico.length;
+    
+    questao.palavrasChaveDiagnostico.forEach(termo => {
+      if (respDiag.includes(termo.toLowerCase())) {
+        acertosDiag++;
+      }
+    });
+    const notaDiag = totalDiag > 0 ? (acertosDiag / totalDiag) * 5 : 5;
+
+    // 2. Validação de Achados (Vale até 5 pontos)
+    let acertosAchados = 0;
+    const totalAchados = questao.palavrasChaveAchados.length;
+    
+    questao.palavrasChaveAchados.forEach(termo => {
+      if (respAchados.includes(termo.toLowerCase())) {
+        acertosAchados++;
+      }
+    });
+    const notaAchados = totalAchados > 0 ? (acertosAchados / totalAchados) * 5 : 5;
+
+    // Nota final de 0 a 10 (arredondada)
+    let notaFinal = Math.round(notaDiag + notaAchados);
+    if (notaFinal > 10) notaFinal = 10;
+
+    // 3. Monta um feedback educativo inteligente
+    let feedbackMsg = "";
+    if (notaFinal >= 9) {
+      feedbackMsg = "Excelente! Sua resposta cobriu os principais achados e o diagnóstico correto.";
+    } else if (notaFinal >= 6) {
+      feedbackMsg = `Bom trabalho! Você acertou partes importantes, mas faltaram alguns termos-chave.\n\n📖 Gabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
+    } else {
+      feedbackMsg = `Sua resposta ficou distante do esperado para este caso.\n\n📖 Gabarito Oficial:\n- Achados: ${questao.achados}\n- Diagnóstico: ${questao.diagnostico}`;
+    }
+
+    // Salva o resultado
     this.respostasUsuario[questao.id] = {
       achados: achadosUsuario,
       diagnostico: diagnosticoUsuario,
-      nota: null,
-      feedback: "Avaliando com IA..."
+      nota: notaFinal,
+      feedback: feedbackMsg
     };
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
-
-    const promptParaIA = `
-      Você é um professor de oftalmologia. Avalie a resposta do aluno comparando-a com o gabarito.
-      Dê uma nota de 0 a 10 considerando a precisão dos achados e o acerto do diagnóstico.
-      
-      GABARITO ESPERADO:
-      - Achados: ${questao.achados}
-      - Diagnóstico: ${questao.diagnostico}
-      
-      RESPOSTA DO ALUNO:
-      - Achados: ${achadosUsuario}
-      - Diagnóstico: ${diagnosticoUsuario}
-      
-      Gere um feedback curto (máximo 3 linhas) justificando a nota.
-      Devolva a resposta ESTRITAMENTE em JSON com a estrutura: {"nota": numero, "feedback": "texto"}
-    `;
-
-    try {
-      const payload = {
-        contents: [{ parts: [{ text: promptParaIA }] }],
-        generationConfig: { responseMimeType: "application/json" }
-      };
-
-      const respostaAPI = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!respostaAPI.ok) {
-        const erroDetalhado = await respostaAPI.text();
-        console.error("Erro retornado pelo Google:", erroDetalhado);
-        throw new Error("Falha na API: " + respostaAPI.status);
-      }
-
-      const dadosBrutos = await respostaAPI.json();
-      const textoDaIA = dadosBrutos.candidates[0].content.parts[0].text;
-      const resultadoJSON = JSON.parse(textoDaIA);
-
-      this.respostasUsuario[questao.id].nota = resultadoJSON.nota;
-      this.respostasUsuario[questao.id].feedback = resultadoJSON.feedback;
-
-      return this.respostasUsuario[questao.id];
-
-    } catch (erro) {
-      console.error("Erro ao consultar o Gemini:", erro);
-      this.respostasUsuario[questao.id].nota = 0;
-      this.respostasUsuario[questao.id].feedback = "Erro de conexão. Verifique se a Chave da API inserida no topo da página está correta e válida.";
-      return this.respostasUsuario[questao.id];
-    }
+    return this.respostasUsuario[questao.id];
   }
 }
